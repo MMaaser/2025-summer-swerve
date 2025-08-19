@@ -71,11 +71,9 @@ public class SwerveSubsystem extends SubsystemBase{ //SubsystemBase gets the sub
         //set states (speed/direction of modules) and log it to the SmartDashboard
         for (int i = 0; i < 4; i++){
             modules[i].setSwerveState(goalStates[i]);
-            //Logger.recordOutput("modules/" + i + " angle", modules[i].getSwerveState().angle);
-            //Logger.recordOutput("modules/" + i + " speed", modules[i].getSwerveState().speedMetersPerSecond);
         }
   
-        Logger.recordOutput("module speed/direction", goalStates);
+        Logger.recordOutput("module speed,direction", goalStates);
 
     }
 
@@ -88,19 +86,9 @@ public class SwerveSubsystem extends SubsystemBase{ //SubsystemBase gets the sub
             controller.getLeftX(), // makes bot move left/right in the x direction
             controller.getRightX() // makes bot rotate in the x direction 
         );
+
+        System.out.println(newGoalSpeeds);
         setChassisSpeed(newGoalSpeeds);
-
-        //setChassisSpeed(new ChassisSpeeds(-1, 0, 0)); // all modules ~180°
-        //setChassisSpeed(new ChassisSpeeds(0, 1, 0));  // left strafe
-       // setChassisSpeed(new ChassisSpeeds(0, -1, 0)); // right strafe
-        double swerveStateLogs[] = { //rotation , velocity
-                modules[0].getSwerveState().angle.getDegrees(), modules[0].getSwerveState().speedMetersPerSecond, 
-                modules[1].getSwerveState().angle.getDegrees(), modules[1].getSwerveState().speedMetersPerSecond, 
-                modules[2].getSwerveState().angle.getDegrees(), modules[2].getSwerveState().speedMetersPerSecond, 
-                modules[3].getSwerveState().angle.getDegrees(), modules[3].getSwerveState().speedMetersPerSecond 
-        };
-
-      //  SmartDashboard.putNumberArray("Swerve Module States", swerveStateLogs);
         
     }
     
