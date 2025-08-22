@@ -22,8 +22,11 @@ public class ExampleSubsystem extends SubsystemBase {
     return runOnce(
         () -> {
           /* one-time action goes here */
+          System.out.println("EXAMPLE METHOD COMMAND");
+
         });
   }
+  
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).

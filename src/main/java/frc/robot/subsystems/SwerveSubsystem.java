@@ -9,27 +9,39 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.JoystickDrive;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 class SwerveModule { // make everything private so it can't be messed with / is only exported in an approved format
     private Talon driveMotor, steerMotor; // falcon 500
-    private SwerveModuleState state; //the current state
+    private SwerveModuleState currentState; 
+    private SwerveModuleState goalState;
+
+    // PID controllers
+    PIDController drivePID;
+    PIDController steerPID;
+
     public SwerveModule(int driveMotorPort, int steerMotorPort){ //immediately instantiate the vars for each module
         driveMotor = new Talon(driveMotorPort);
         steerMotor = new Talon(steerMotorPort);
-        state =  new SwerveModuleState(); // no params, has 0s for angle and speed
+        currentState =  new SwerveModuleState(); // no params, has 0s for angle and speed
+        goalState = new SwerveModuleState();
+
+        drivePID = new PIDController(0.1, 0,0); //TODO: integrate derivative and integral usage
+        steerPID = new PIDController(0.1, 0,0);
     }
 
     public SwerveModuleState getSwerveState(){ // getter for security, best practice not to give other classes the ability to mess with state directly, and I can centralize all changes to state here
-        return state;
+        return currentState;
     }
 
-    public void setSwerveState(SwerveModuleState newState){ //updates the state
-        state = newState; 
+    public void setGoalSwerveState(SwerveModuleState newState){ //updates the state
+        goalState = newState; 
     }
 }
 
@@ -65,12 +77,17 @@ public class SwerveSubsystem extends SubsystemBase{ //SubsystemBase gets the sub
         controller = io;
     }
 
+    public SwerveSubsystem(){ //when this subsystem is created as an object, this is called once
+        new ChassisSpeeds(0,0,0);
+    }
+
+
     public void setChassisSpeed(ChassisSpeeds goalSpeed){
         SwerveModuleState[] goalStates = kinematics.toSwerveModuleStates(goalSpeed);
 
         //set states (speed/direction of modules) and log it to the SmartDashboard
         for (int i = 0; i < 4; i++){
-            modules[i].setSwerveState(goalStates[i]);
+            modules[i].setGoalSwerveState(goalStates[i]);
         }
   
         Logger.recordOutput("module speed,direction", goalStates);
@@ -81,15 +98,14 @@ public class SwerveSubsystem extends SubsystemBase{ //SubsystemBase gets the sub
     @Override
     public void periodic(){
 
-        ChassisSpeeds newGoalSpeeds = new ChassisSpeeds(
+       /* ChassisSpeeds newGoalSpeeds = new ChassisSpeeds(
             controller.getLeftY(), // makes bot move forward/backward in the y direction
             controller.getLeftX(), // makes bot move left/right in the x direction
             controller.getRightX() // makes bot rotate in the x direction 
         );
 
-        System.out.println(newGoalSpeeds);
         setChassisSpeed(newGoalSpeeds);
-        
+        */
     }
     
 }

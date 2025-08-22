@@ -4,23 +4,27 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
-public class ExampleCommand extends Command {
+public class JoystickDrive extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_exampleSubsystem;
+  private SwerveSubsystem m_swerveSubsystem;
+  private CommandXboxController m_controller;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ExampleCommand(ExampleSubsystem exampleSubsystem) {
-    m_exampleSubsystem = exampleSubsystem;
+  public JoystickDrive(CommandXboxController controller, SwerveSubsystem swerveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(exampleSubsystem);
+    m_swerveSubsystem = swerveSubsystem;
+    m_controller = controller;
+    addRequirements(m_swerveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +34,16 @@ public class ExampleCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("EXAMPLE COMMAND RAN");
+    ChassisSpeeds newGoalSpeeds = new ChassisSpeeds(
+            m_controller.getLeftY(), // makes bot move forward/backward in the y direction
+            m_controller.getLeftX(), // makes bot move left/right in the x direction
+            m_controller.getRightX() // makes bot rotate in the x direction 
+        );
+
+        m_swerveSubsystem.setChassisSpeed(newGoalSpeeds);
+
+        System.out.println("JOYSTICK DRIVE EXECUTED");
+        
   }
 
   // Called once the command ends or is interrupted.
