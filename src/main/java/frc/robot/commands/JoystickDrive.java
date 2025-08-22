@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,15 +36,12 @@ public class JoystickDrive extends Command {
   @Override
   public void execute() {
     ChassisSpeeds newGoalSpeeds = new ChassisSpeeds(
-            m_controller.getLeftY(), // makes bot move forward/backward in the y direction
-            m_controller.getLeftX(), // makes bot move left/right in the x direction
-            m_controller.getRightX() // makes bot rotate in the x direction 
+            MathUtil.applyDeadband(m_controller.getLeftY(), 0.02), // makes bot move forward/backward in the y direction
+            MathUtil.applyDeadband(m_controller.getLeftX(), 0.02), // makes bot move left/right in the x direction
+            MathUtil.applyDeadband(m_controller.getRightX(), 0.02) // makes bot rotate in the x direction 
         );
 
-        m_swerveSubsystem.setChassisSpeed(newGoalSpeeds);
-
-        System.out.println("JOYSTICK DRIVE EXECUTED");
-        
+        m_swerveSubsystem.setChassisSpeed(newGoalSpeeds);        
   }
 
   // Called once the command ends or is interrupted.
