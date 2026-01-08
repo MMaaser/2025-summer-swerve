@@ -1,4 +1,6 @@
 <h1>What is this?</h1>
+- simulated swerve drive using logical interfaces
+
 - a way to kill time/refine my understanding of swerve
 
 - an implementation of a way to test swerve logic without having a robot (this method may be compatible with commandswervedrivetrain)
